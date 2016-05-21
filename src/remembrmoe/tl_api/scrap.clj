@@ -1,4 +1,4 @@
-(ns remembrmoe.tl-api.handlers
+(ns remembrmoe.tl-api.scrap
   (:require [net.cgrand.enlive-html :as html]
             [taoensso.timbre :as timbre]
             [clojure.string :as str]))
@@ -54,7 +54,7 @@
             :name (second (str/split (second %) #"="))})))))
 
 (defn fetch-lines []
-  (extract-lines (fetch-url list-line-url)))
+  (extract-lines (fetch-url lines-url)))
 
 (def selector-directions
   [[:ul (html/attr= :data-role "listview")] :a])
@@ -78,7 +78,7 @@
             :direction (second (str/split (second %) #"="))})))))
 
 (defn fetch-directions [line-map]
-  (extract-directions (fetch-url (make-line-direction-url line-map))))
+  (extract-directions (fetch-url (make-direction-url line-map))))
 
 (def selector-stations
   [[:ul (html/attr= :data-role "listview")] :.arret :a])
@@ -102,7 +102,7 @@
             :id-stop (second (str/split (nth % 3) #"="))})))))
 
 (defn fetch-stations [direction-map]
-  (extract-stations (fetch-url (make-line-station-url direction-map))))
+  (extract-stations (fetch-url (make-station-url direction-map))))
 
 (defn fetch-tl-state []
   (map (fn [line-map]

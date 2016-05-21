@@ -8,6 +8,7 @@
             [taoensso.timbre :as timbre]
             [clojure.data.json :as json]
             [remembrmoe.tl-api.state :as state]
+            [remembrmoe.tl-api.scrap :as scrapper]
             [remembrmoe.tl-api.query :as q]))
 
 (defn success [body]
@@ -29,6 +30,11 @@
   (GET "/" request
        (timbre/info request)
        (success "hello"))
+
+  (GET "/refresh" request
+       (timbre/info request)
+       (reset! state/tl-state (scrapper/fetch-tl-state))
+       (success @state/tl-state))
 
   (GET "/state" request
        (timbre/info request)
