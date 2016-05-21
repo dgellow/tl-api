@@ -2,8 +2,9 @@
   (:require [org.httpkit.server :as http-kit]
             [taoensso.timbre :as timbre]
             [active.timbre-logstash :as timbre-logstash]
-            [remembrmoe.tl-api.state :refer [web-server]]
-            [remembrmoe.tl-api.handlers :refer [app]])
+            [remembrmoe.tl-api.state :refer [web-server tl-state]]
+            [remembrmoe.tl-api.handlers :refer [app]]
+            [remembrmoe.tl-api.scrap :as scrapper])
   (:gen-class))
 
 ;; Logging
@@ -49,7 +50,8 @@
 (defn start-app! [[port]]
   (let [port (http-port port)]
     (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app!))
-    (start-web-server! port)))
+    (start-web-server! port)
+    (reset! tl-state (scrapper/fetch-tl-state))))
 
 (defn -main [& args]
   (start-app! (or args [(System/getenv "PORT")])))
