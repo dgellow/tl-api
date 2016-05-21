@@ -52,4 +52,4 @@
     (start-web-server! port)))
 
 (defn -main [& args]
-  (start-app! args))
+  (start-app! (or args [(System/getenv "PORT")])))
