@@ -65,6 +65,16 @@
              directions (q/get-directions @state/tl-state id-or-name)]
          (if (seq (:directions directions))
             (success directions)
+            (resource-not-found ))))
+
+  (GET "/lines/:id-or-name/directions/:direction-id/stations" request
+       (timbre/info request)
+       (let [id-or-name (get-in request [:params :id-or-name])
+             direction-id (get-in request [:params :direction-id])
+             stations (q/get-stations @state/tl-state id-or-name
+                                      direction-id)]
+         (if (seq (:stations stations))
+            (success stations)
             (resource-not-found )))))
 
   (fn [request]

@@ -29,4 +29,14 @@
   (let [line (line-by-name-or-id tl-state line-name-or-id)]
     {:id-line (:id line)
      :name-line (:name line)
-     :directions (map #(select-keys % [:id :direction]) (:directions line))}))
+     :directions (map #(select-keys % [:id :direction])
+                   (:directions line))}))
+
+(defn get-stations [tl-state line-name-or-id direction-id]
+  (let [line (line-by-name-or-id tl-state line-name-or-id)
+        direction (some #(and (= (:id %) direction-id) %)
+                        (:directions line))]
+    {:id-line (:id line)
+     :name-line (:name line)
+     :id-direction (:id direction)
+     :stations (:stations direction)}))
