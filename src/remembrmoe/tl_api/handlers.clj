@@ -55,8 +55,16 @@
         (timbre/info request)
         (let [id-or-name (get-in request [:params :id-or-name])
               line (q/line-by-name-or-id @state/tl-state id-or-name)]
-          (if line
+          (if (seq line)
             (success line)
+            (resource-not-found ))))
+
+  (GET "/lines/:id-or-name/directions" request
+       (timbre/info request)
+       (let [id-or-name (get-in request [:params :id-or-name])
+             directions (q/get-directions @state/tl-state id-or-name)]
+         (if (seq (:directions directions))
+            (success directions)
             (resource-not-found )))))
 
   (fn [request]
