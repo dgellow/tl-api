@@ -3,21 +3,19 @@
             [taoensso.timbre :as timbre]
             [clojure.string :as str]))
 
-(def test-url "http://www.t-l.ch/tl-live-mobile/line_detail.php?from=horaire&id=3377704015495675&line=11821953316814849&id_stop=2533279085546870&id_direction=11821953316814849&lineName=1")
+(def lines-url "http://www.t-l.ch/tl-live-mobile/index.php")
 
-(def list-lines-url "http://www.t-l.ch/tl-live-mobile/index.php")
-
-(def line-direction-base-url
+(def direction-base-url
   "http://www.t-l.ch/tl-live-mobile/horaire_level2.php")
-(defn make-line-direction-url [line-map]
-  (str line-direction-base-url "?"
+(defn make-direction-url [line-map]
+  (str direction-base-url "?"
        "id=" (:id line-map) "&"
        "lineName=" (:name line-map)))
 
-(def line-station-base-url
+(def station-base-url
   "http://www.t-l.ch/tl-live-mobile/horaire_level3.php")
-(defn make-line-station-url [direction-map]
-  (str line-station-base-url "?"
+(defn make-station-url [direction-map]
+  (str station-base-url "?"
        "id=" (:id direction-map) "&"
        "id_direction=" (:direction direction-map)))
 
@@ -55,17 +53,8 @@
            {:id (second (str/split (first %) #"="))
             :name (second (str/split (second %) #"="))})))))
 
-(defn lines []
+(defn fetch-lines []
   (extract-lines (fetch-url list-line-url)))
-
-(defn line-where [key value]
-  (some #(and (= (key %) value) %) (lines)))
-
-(defn line-by-name [name]
-  (line-where :name name))
-
-(defn line-by-id [id]
-  (line-where :id id))
 
 (def selector-directions
   [[:ul (html/attr= :data-role "listview")] :a])
@@ -88,7 +77,7 @@
            {:id (second (str/split (first %) #"="))
             :direction (second (str/split (second %) #"="))})))))
 
-(defn line-directions [line-map]
+(defn fetch-directions [line-map]
   (extract-directions (fetch-url (make-line-direction-url line-map))))
 
 (def selector-stations
@@ -112,7 +101,7 @@
            {:id (second (str/split (second %) #"="))
             :id-stop (second (str/split (nth % 3) #"="))})))))
 
-(defn direction-stations [direction-map]
+(defn fetch-stations [direction-map]
   (extract-stations (fetch-url (make-line-station-url direction-map))))
 
 (defn fetch-tl-state []
@@ -121,6 +110,6 @@
                 (map
                   (fn [direction-map]
                     (assoc direction-map :stations
-                           (direction-stations direction-map)))
-                  (line-directions line-map))))
-    (lines)))
+                           (fetch-stations direction-map)))
+                  (fetch-directions line-map))))
+    (fetch-lines)))
