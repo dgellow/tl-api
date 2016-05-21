@@ -7,7 +7,8 @@
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [clojure.data.json :as json]
-            [remembrmoe.tl-api.state :as state]))
+            [remembrmoe.tl-api.state :as state]
+            [remembrmoe.tl-api.query :as q]))
 
 (defn success [body]
   (merge (r/response body)
@@ -32,6 +33,10 @@
   (GET "/state" request
        (timbre/info request)
        (success @state/tl-state))
+
+  (GET "/lines" request
+       (timbre/info request)
+       (success (q/get-lines @state/tl-state)))
 
   (fn [request]
     (timbre/info request)
