@@ -3,7 +3,7 @@
             [ring.middleware.defaults :refer [api-defaults wrap-defaults]]
             [ring.middleware.json :refer [wrap-json-response]]
             [ring.util.response :as r]
-            [compojure.core :refer [defroutes GET POST]]
+            [compojure.core :refer [defroutes GET POST context]]
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [clojure.data.json :as json]
@@ -33,18 +33,20 @@
        (timbre/info request)
        (success "hello"))
 
-  (GET "/refresh" request
-       (timbre/info request)
-       (reset! state/tl-state (scrapper/fetch-tl-state))
-       (success @state/tl-state))
+  (context
+   "/api/v1" []
+   (GET "/refresh" request
+        (timbre/info request)
+        (reset! state/tl-state (scrapper/fetch-tl-state))
+        (success @state/tl-state))
 
-  (GET "/state" request
-       (timbre/info request)
-       (success @state/tl-state))
+   (GET "/state" request
+        (timbre/info request)
+        (success @state/tl-state))
 
-  (GET "/lines" request
-       (timbre/info request)
-       (success (q/get-lines @state/tl-state)))
+   (GET "/lines" request
+        (timbre/info request)
+        (success (q/get-lines @state/tl-state))))
 
   (fn [request]
     (timbre/info request)
