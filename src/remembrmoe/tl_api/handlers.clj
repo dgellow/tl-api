@@ -27,11 +27,11 @@
 (defroutes app-routes
   (GET "/" request
        (timbre/info request)
-       (success {:result "hello"}))
+       (success "hello"))
 
   (GET "/state" request
        (timbre/info request)
-       (success {:result @state/tl-state}))
+       (success @state/tl-state))
 
   (fn [request]
     (timbre/info request)
