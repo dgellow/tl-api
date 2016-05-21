@@ -6,30 +6,36 @@
             [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [remembrmoe.tl-api.state :as state]))
 
 (defn success [body]
   (merge (r/response body)
-         {:body {:ok true}}))
+         {:body {:ok true
+                 :result body}}))
 
-(defn error [body code description]
-  (merge (r/response body)
+(defn error [code description]
+  (merge (r/response nil)
          {:status 501
           :body {:ok false
                  :error-code code
                  :description description}}))
 
-(defn not-found [body]
-  (error body 404 "Method not found"))
+(defn not-found []
+  (error 404 "Method not found"))
 
 (defroutes app-routes
   (GET "/" request
        (timbre/info request)
        (success {:result "hello"}))
 
+  (GET "/state" request
+       (timbre/info request)
+       (success {:result @state/tl-state}))
+
   (fn [request]
     (timbre/info request)
-    (not-found nil)))
+    (not-found)))
 
 (def app
   (-> app-routes
