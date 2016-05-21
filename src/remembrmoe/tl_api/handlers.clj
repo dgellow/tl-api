@@ -25,8 +25,11 @@
                  :description description}
           :headers {"Content-Type" "application/json"}}))
 
-(defn not-found []
+(defn method-not-found []
   (error 404 "Method not found"))
+
+(defn resource-not-found []
+  (error 404 "Resource not found"))
 
 (defroutes app-routes
   (GET "/" request
@@ -46,11 +49,19 @@
 
    (GET "/lines" request
         (timbre/info request)
-        (success (q/get-lines @state/tl-state))))
+        (success (q/get-lines @state/tl-state)))
+
+  (GET "/lines/:id-or-name" request
+        (timbre/info request)
+        (let [id-or-name (get-in request [:params :id-or-name])
+              line (q/line-by-name-or-id @state/tl-state id-or-name)]
+          (if line
+            (success line)
+            (resource-not-found )))))
 
   (fn [request]
     (timbre/info request)
-    (not-found)))
+    (method-not-found)))
 
 (def app
   (-> app-routes
