@@ -14,14 +14,16 @@
 (defn success [body]
   (merge (r/response body)
          {:body {:ok true
-                 :result body}}))
+                 :result body}
+          :headers {"Content-Type" "application/json"}}))
 
 (defn error [code description]
   (merge (r/response nil)
          {:status 501
           :body {:ok false
                  :error-code code
-                 :description description}}))
+                 :description description}
+          :headers {"Content-Type" "application/json"}}))
 
 (defn not-found []
   (error 404 "Method not found"))
@@ -51,4 +53,4 @@
 (def app
   (-> app-routes
      (wrap-defaults api-defaults)
-     (wrap-json-response {:headers {"Content-Type" "application/json"}})))
+     (wrap-json-response)))
