@@ -10,6 +10,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [com.taoensso/timbre "4.3.1"]
                  [timbre-logstash "0.3.0"]
+                 [enlive "1.1.6"]
 
                  ;; Dev tools
                  [pandeiro/boot-http "0.7.3"]
