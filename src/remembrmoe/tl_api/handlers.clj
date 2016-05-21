@@ -75,7 +75,19 @@
                                       direction-id)]
          (if (seq (:stations stations))
             (success stations)
-            (resource-not-found )))))
+            (resource-not-found ))))
+
+  (GET "/lines/:line-id/directions/:direction-id/stations/:station-id/horaire"
+       request
+       (timbre/info request)
+       (let [line-id (get-in request [:params :line-id])
+             direction-id (get-in request [:params :direction-id])
+             station-id (get-in request [:params :station-id])
+             horaire (scrapper/fetch-horaire
+                      line-id direction-id station-id )]
+         (if (seq horaire)
+           (success horaire)
+           (resource-not-found )))))
 
   (fn [request]
     (timbre/info request)
