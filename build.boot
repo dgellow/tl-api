@@ -1,5 +1,5 @@
 (set-env!
- :resource-paths #{"src"}
+ :source-paths #{"src"}
  :dependencies '[
                  ;; Backend
                  [http-kit "2.1.19"]
@@ -13,11 +13,12 @@
                  [enlive "1.1.6"]
 
                  ;; Dev tools
-                 [pandeiro/boot-http "0.7.3"]
-                 [org.clojure/tools.namespace "0.2.11"]
+                 [adzerk/boot-test "1.1.1"]
 
                  ;; Clojure version
                  [org.clojure/clojure "1.8.0"]])
+
+(require '[adzerk.boot-test :refer :all])
 
 (task-options!
  pom {:project 'remembrmoe/tl-api
@@ -28,6 +29,21 @@
 (deftask build
   "Build project"
   []
+  (comp (aot)
+        (pom)
+        (uber)
+        (jar)))
+
+(deftask build-tests
+  "Build project tests"
+  []
+  (set-env!
+   :source-paths #{"src" "test"})
+  (task-options!
+   pom {:project 'remembrmoe/tl-api-tests
+        :version "0.1.0-SNAPSHOT"}
+   aot {:namespace #{'remembrmoe.tl-api.test-core}}
+   jar {:main 'remembrmoe.tl-api.test-core})
   (comp (aot)
         (pom)
         (uber)

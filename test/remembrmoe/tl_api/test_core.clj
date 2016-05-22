@@ -1,5 +1,8 @@
 (ns remembrmoe.tl-api.test-core
-  (:require [clojure.test :refer [deftest is]]))
+  (:require [clojure.test :refer [deftest is run-all-tests successful?]]
+            [remembrmoe.tl-api.test-scrap])
+  (:gen-class))
 
-(deftest implemented?
-  (is (= :implemented? true)))
+(defn -main [& args]
+  (when (not (successful? (run-all-tests)))
+    (System/exit 1)))
