@@ -4,5 +4,5 @@
   (:gen-class))
 
 (defn -main [& args]
-  (when (not (successful? (run-all-tests)))
+  (when (not (successful? (run-all-tests #"remembrmoe.tl-api.*")))
     (System/exit 1)))
