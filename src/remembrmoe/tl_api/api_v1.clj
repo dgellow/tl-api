@@ -1,5 +1,6 @@
 (ns remembrmoe.tl-api.api-v1
   (:require [compojure.core :refer [defroutes GET context]]
+            [taoensso.timbre :as timbre]
             [dgellow.utils.web-api :refer [success resource-not-found]]
             [remembrmoe.tl-api.state :as state]
             [remembrmoe.tl-api.scrap :as scrapper]
