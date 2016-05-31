@@ -11,6 +11,7 @@
                  [com.taoensso/timbre "4.3.1"]
                  [timbre-logstash "0.3.0"]
                  [enlive "1.1.6"]
+                 [dgellow/utils "0.1.0"]
 
                  ;; Dev tools
                  [adzerk/boot-test "1.1.1"]
