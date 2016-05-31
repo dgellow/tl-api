@@ -1,8 +1,9 @@
 (ns remembrmoe.tl-api.doc
-  (:require [clj-yaml.core :as yaml]))
+  (:require [clj-yaml.core :as yaml]
+            [clojure.java.io :as io]))
 
 (defn read-documentation-file []
-  (slurp "res/documentation.yaml"))
+  (slurp (io/resource "documentation.yaml")))
 
 (defprotocol Formatter
   (bold [x s])
