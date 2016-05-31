@@ -56,15 +56,15 @@
     (is (every? :id stations))
     (is (every? :id-stop stations))))
 
-(deftest fetch-horaire-page
+(deftest fetch-horaires-page
   (let [page (scrapper/fetch-url
-              (scrapper/make-horaire-url
+              (scrapper/make-horaires-url
                (:id line) (:id direction) (:id station)))]
     (is (not (empty? page)))
-    (is (not (empty? (html/select page scrapper/selector-horaire))))))
+    (is (not (empty? (html/select page scrapper/selector-horaires))))))
 
-(deftest fetch-horaire
-  (let [horaire (scrapper/fetch-horaire
+(deftest fetch-horaires
+  (let [horaires (scrapper/fetch-horaires
                  (:id line) (:id direction) (:id station))]
-    (is (not (empty? horaire)))
-    (is (every? #(not (clojure.string/blank? %)) horaire))))
+    (is (not (empty? horaires)))
+    (is (every? #(not (clojure.string/blank? %)) horaires))))
