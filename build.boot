@@ -1,5 +1,6 @@
 (set-env!
  :source-paths #{"src"}
+ :resource-paths #{"res"}
  :dependencies '[
                  ;; Backend
                  [http-kit "2.1.19"]
@@ -12,6 +13,7 @@
                  [timbre-logstash "0.3.0"]
                  [enlive "1.1.6"]
                  [dgellow/utils "0.1.0"]
+                 [circleci/clj-yaml "0.5.5"]
 
                  ;; Dev tools
                  [adzerk/boot-test "1.1.1"]

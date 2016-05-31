@@ -1,0 +1,54 @@
+# Header
+- tl-api(1)
+- "current version: v1"
+
+---
+
+# Body
+- title: Name
+  content: tl-api - The unofficial TL Live API
+
+- title: Synopsis
+  content: |
+    curl https://tl.remembr.moe/api/v1/lines
+    curl https://tl.remembr.moe/api/v1/lines/m1
+    curl https://tl.remembr.moe/api/v1/lines/11821953316814882
+
+- title: Description
+  content: |
+    Bla bla bla bla bla.
+
+- title: Web API
+  content:
+    lines: |
+      Lines are bla bla bla bla.
+      And more blablablabla.
+
+      curl https://tl.remembr.moe/api/v1/:ID_OR_NAME
+
+      Where :ID_OR_NAME is something blablablabla.
+
+    directions: |
+      Directions are bla bla bla bla.
+      And more blablablabla.
+
+      curl https://tl.remembr.moe/api/v1/m1/directions
+
+    stations: |
+      Stations are bla bla bla bla.
+      And more blablablabla.
+
+      curl https://tl.remembr.moe/api/v1/m1/directions/2533279085546908/stations
+
+    horaires: |
+      Horaires are bla bla bla bla.
+      And more blablablabla.
+
+      curl https://tl.remembr.moe/api/v1/lines/11821953316814850/directions/2533279085546908/stations/3377704015495311/horaires
+- title: Author
+  content: |
+    Samuel El-Borai aka dgellow
+
+- title: See also
+  content: |
+    Clojure client - https://github.com/dgellow/tl-api-client
