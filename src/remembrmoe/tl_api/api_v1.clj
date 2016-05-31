@@ -51,17 +51,17 @@
            (success stations)
            (resource-not-found )))))
 
-(def get-horaire
-  (GET "/lines/:line-id/directions/:direction-id/stations/:station-id/horaire"
+(def get-horaires
+  (GET "/lines/:line-id/directions/:direction-id/stations/:station-id/horaires"
        request
        (timbre/info request)
        (let [line-id (get-in request [:params :line-id])
              direction-id (get-in request [:params :direction-id])
              station-id (get-in request [:params :station-id])
-             horaire (scrapper/fetch-horaire
+             horaires (scrapper/fetch-horaires
                       line-id direction-id station-id )]
-         (if (seq horaire)
-           (success horaire)
+         (if (seq horaires)
+           (success horaires)
            (resource-not-found )))))
 
 (defroutes routes
@@ -71,4 +71,4 @@
   get-line
   get-directions
   get-stations
-  get-horaire)
+  get-horaires)

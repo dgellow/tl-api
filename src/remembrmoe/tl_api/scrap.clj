@@ -19,10 +19,10 @@
        "id=" (:id direction-map) "&"
        "id_direction=" (:direction direction-map)))
 
-(def horaire-base-url
+(def horaires-base-url
   "http://www.t-l.ch/tl-live-mobile/line_detail.php")
-(defn make-horaire-url [id-line id-direction id-station]
-  (str horaire-base-url "?"
+(defn make-horaires-url [id-line id-direction id-station]
+  (str horaires-base-url "?"
        "from=horaire" "&"
        "id=" id-station "&"
        "id_direction=" id-direction "&"
@@ -31,16 +31,16 @@
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
 
-(def selector-horaire
+(def selector-horaires
   [[:ul (html/attr= :data-role "listview")] :.time])
 
-(defn extract-horaire [page]
-  (let [selection (html/select page selector-horaire)]
+(defn extract-horaires [page]
+  (let [selection (html/select page selector-horaires)]
     (map (comp first :content) selection)))
 
-(defn fetch-horaire [id-line id-direction id-station]
-  (extract-horaire (fetch-url
-                    (make-horaire-url id-line id-direction id-station))))
+(defn fetch-horaires [id-line id-direction id-station]
+  (extract-horaires (fetch-url
+                    (make-horaires-url id-line id-direction id-station))))
 
 (def selector-lines
   [[:ul (html/attr= :data-role "listview")] :a])
