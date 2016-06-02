@@ -1,6 +1,7 @@
 (ns remembrmoe.tl-api.test-scrap
   (:require [clojure.test :refer [deftest is]]
             [remembrmoe.tl-api.scrap :as scrapper]
+            [taoensso.timbre :as timbre]
             [net.cgrand.enlive-html :as html]))
 
 (defn select-item [coll]
@@ -17,6 +18,11 @@
 (def station (select-item (scrapper/fetch-stations direction)))
 (deftest selected-station
   (is (not (nil? station))))
+
+(timbre/info (str "Random Pick\n"
+                  {:line line
+                   :direction direction
+                   :station station}))
 
 (deftest fetch-tl-live-root-url
   (let [page (scrapper/fetch-url
