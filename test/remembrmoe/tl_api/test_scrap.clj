@@ -5,7 +5,7 @@
             [net.cgrand.enlive-html :as html]))
 
 (defn select-item [coll]
-  (rand-nth coll))
+  (rand-nth (seq coll)))
 
 (def line (select-item (scrapper/fetch-lines)))
 (deftest selected-line
