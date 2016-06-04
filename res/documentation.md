@@ -4,7 +4,7 @@ current version: v1
 
 _Notes_
 
-You can get this page in a terminal friendly format:
+_You can get this page in a terminal friendly format:_
 ```
 curl https://tl.remembr.moe
 ```
@@ -27,7 +27,7 @@ Details of the line "m1":
 curl https://tl.remembr.moe/api/v1/lines/m1
 ```
 
-The line :name or :id can be used interchangeably
+The line `:name` or `:id` can be used interchangeably
 
 ```
 curl https://tl.remembr.moe/api/v1/lines/11821953316814882

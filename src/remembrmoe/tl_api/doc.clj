@@ -39,7 +39,7 @@
          ">" text "</a>"))
   (soft-line-break [_ _] "\n")
   (code [_ [{text :text}]]
-    (format "<pre class=\"inline\">%s</pre>" text))
+    (format "<code class=\"inline\">%s</code>" text))
   (bold [_ [{text :text}]]
     (format "<strong>%s</strong>" text))
   (italic [_ [{text :text}]]
@@ -137,8 +137,22 @@
     padding-left: 80px;
   }
 
+  pre {
+    border: 1px solid #DADADA;
+    margin-left: 80px;
+    padding: 10px;
+  }
+
   p.indent {
     padding-left: 140px;
+  }
+
+  code {
+    background-color: #F1F1F1;
+    padding: 3px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    color: #AD7000;
   }")
 
 (defn to-html [doc]
