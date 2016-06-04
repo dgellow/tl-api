@@ -102,7 +102,9 @@ Response:
 And more detailed information for a specific line
 
 ```
-curl https://tl.remembr.moe/api/v1/:id_or_name
+curl https://tl.remembr.moe/api/v1/m1
+# ... or ...
+curl https://tl.remembr.moe/api/v1/11821953316814882
 ```
 
 Response:
