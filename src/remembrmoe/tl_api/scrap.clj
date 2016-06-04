@@ -94,26 +94,46 @@
 (defn fetch-lines []
   (extract-lines (fetch-url lines-url)))
 
-(def selector-directions
+(def selector-directions-links
   [[:ul (html/attr= :data-role "listview")] :a])
 
+(def selector-directions-info
+  [[:ul (html/attr= :data-role "listview")]
+   :table
+   [:td (html/nth-child 2)]])
+
 (defn extract-directions [page]
-  (let [selection (html/select page selector-directions)]
-    (->> selection
-       ;; Get href attributes
-       (map (comp
-             :href
-             :attrs))
-       ;; Get url parameters
-       (map (comp
-             #(str/split % #"&")
-             second
-             #(str/split % #"\?")))
-       ;; Convert to hashmap
-       (map
-         #(identity
-           {:id (second (str/split (first %) #"="))
-            :direction (second (str/split (second %) #"="))})))))
+  (let [links (html/select page selector-directions-links)
+        directions-base
+        (->> links
+           ;; Get href attributes
+           (map (comp
+                 :href
+                 :attrs))
+           ;; Get url parameters
+           (map (comp
+                 #(str/split % #"&")
+                 second
+                 #(str/split % #"\?")))
+           ;; Convert to hashmap
+           (map
+             #(identity
+               {:id (second (str/split (first %) #"="))
+                :direction (second (str/split (second %) #"="))})))
+
+        info (html/select page selector-directions-info)
+        directions-info
+        (->> info
+           (map :content)
+           (map (fn [x]
+                  (->> x
+                     (map (fn [y] (if (map? y) (:content y) y)))
+                     flatten
+                     (map str)
+                     (map clojure.string/trim)
+                     (filter not-empty))))
+           (map (fn [x] {:from (first x) :to (last x)})))]
+    (map merge directions-base directions-info)))
 
 (defn fetch-directions [line-map]
   (extract-directions (fetch-url (make-direction-url line-map))))
