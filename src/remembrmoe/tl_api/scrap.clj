@@ -47,26 +47,48 @@
   (extract-horaires (fetch-url
                     (make-horaires-url id-line id-direction id-station))))
 
-(def selector-lines
+(def selector-lines-links
   [[:ul (html/attr= :data-role "listview")] :a])
 
+(def selector-lines-info
+  [[:ul (html/attr= :data-role "listview")]
+   :table
+   [:td (html/nth-child 2)]])
+
 (defn extract-lines [page]
-  (let [selection (html/select page selector-lines)]
-    (->> selection
-       ;; Get href attributes
-       (map (comp
-             :href
-             :attrs))
-       ;; Get url parameters
-       (map (comp
-             #(str/split % #"&")
-             second
-             #(str/split % #"\?")))
-       ;; Convert to hashmap
-       (map
-         #(identity
-           {:id (second (str/split (first %) #"="))
-            :name (second (str/split (second %) #"="))})))))
+  (let [links (html/select page selector-lines-links)
+        lines-basic
+        (->> links
+           ;; Get href attributes
+           (map (comp
+                 :href
+                 :attrs))
+           ;; Get url parameters
+           (map (comp
+                 #(str/split % #"&")
+                 second
+                 #(str/split % #"\?")))
+           ;; Convert to hashmap
+           (map
+             #(identity
+               {:id (second (str/split (first %) #"="))
+                :name (second (str/split (second %) #"="))})))
+
+        ;; Extract destinations and check for signaled issues
+        info (html/select page selector-lines-info)
+        lines-info
+        (->> info
+           (map :content)
+           (map
+             (fn [x]
+               (if (= (some (fn [y] (get-in y [:attrs :src])) x)
+                      "images/alert.png")
+                 {:issue true
+                  :info (str (second x) " <-> "
+                             (first (:content (last x))))}
+                 {:info (str (first x) " <-> "
+                             (first (:content (last x))))}))))]
+    (map merge lines-basic lines-info)))
 
 (defn fetch-lines []
   (extract-lines (fetch-url lines-url)))

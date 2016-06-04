@@ -22,7 +22,7 @@
       (line-by-name tl-state line-name-or-id))))
 
 (defn get-lines [tl-state]
-  (map #(select-keys % [:id :name])
+  (map #(select-keys % [:id :name :terminus :issue])
     tl-state))
 
 (defn get-directions [tl-state line-name-or-id]
