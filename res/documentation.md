@@ -2,6 +2,7 @@ tl-api(1)
 
 current version: v1
 
+
 _Notes_
 
 _You can get this page in a terminal friendly format:_
@@ -195,6 +196,10 @@ Samuel El-Borai
 
 [http://www.webp.ch/](http://www.webp.ch/)
 
+[https://github.com/RememberMoe/tl-api](https://github.com/RememberMoe/tl-api)
+
 ## See also
+
+Github for bug report and sources - [https://github.com/RememberMoe/tl-api](https://github.com/RememberMoe/tl-api)
 
 Clojure client - [https://github.com/dgellow/tl-api-client](https://github.com/dgellow/tl-api-client)
