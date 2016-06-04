@@ -16,6 +16,40 @@
   (bold [_ segment])
   (italic [_ segment]))
 
+(defn render-segment [renderer md-segment]
+  (cond
+    (:paragraph md-segment)
+    (paragraph renderer (:paragraph md-segment))
+
+    (:heading md-segment)
+    (heading renderer (:heading md-segment))
+
+    (:fenced-code-block md-segment)
+    (fenced-code-block renderer (:fenced-code-block md-segment))
+
+    (:text md-segment)
+    (text renderer (:text md-segment))
+
+    (:link md-segment)
+    (link renderer (:link md-segment))
+
+    (:soft-line-break md-segment)
+    (soft-line-break renderer (:soft-line-break md-segment))
+
+    (:code md-segment)
+    (code renderer (:code md-segment))
+
+    (:bold md-segment)
+    (bold renderer (:bold md-segment))
+
+    (:italic md-segment)
+    (italic renderer (:italic md-segment))
+
+    :default
+    (throw (java.lang.UnsupportedOperationException.
+            (str
+             "No rendering function has been implemented for this markdown segment:\n" md-segment)))))
+
 (defrecord HtmlRenderer []
   Renderer
   (heading [renderer [{level :level} & more]]
@@ -83,40 +117,6 @@
     (format "[1m%s[0m" text))
   (italic [_ [{text :text}]]
     (format "[3m%s[0m" text)))
-
-(defn render-segment [renderer md-segment]
-  (cond
-    (:paragraph md-segment)
-    (paragraph renderer (:paragraph md-segment))
-
-    (:heading md-segment)
-    (heading renderer (:heading md-segment))
-
-    (:fenced-code-block md-segment)
-    (fenced-code-block renderer (:fenced-code-block md-segment))
-
-    (:text md-segment)
-    (text renderer (:text md-segment))
-
-    (:link md-segment)
-    (link renderer (:link md-segment))
-
-    (:soft-line-break md-segment)
-    (soft-line-break renderer (:soft-line-break md-segment))
-
-    (:code md-segment)
-    (code renderer (:code md-segment))
-
-    (:bold md-segment)
-    (bold renderer (:bold md-segment))
-
-    (:italic md-segment)
-    (italic renderer (:italic md-segment))
-
-    :default
-    (throw (java.lang.UnsupportedOperationException.
-            (str
-             "No rendering function has been implemented for this markdown segment:\n" md-segment)))))
 
 (def html-styles
   "body {
