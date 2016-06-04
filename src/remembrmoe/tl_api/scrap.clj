@@ -39,7 +39,8 @@
     (->> selection
        (map :content)
        (map (fn [x]
-              (if (some (fn [y] (get-in y [:attrs :src])) x)
+              (if (= (some (fn [y] (get-in y [:attrs :src])) x)
+                     "images/vague.png")
                 (str "~" (last x))
                 (first x)))))))
 
