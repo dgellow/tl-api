@@ -29,7 +29,7 @@
              line (q/line-by-name-or-id @state/tl-state id-or-name)]
          (if (seq line)
            (success line)
-           (resource-not-found )))))
+           (resource-not-found)))))
 
 (def get-directions
   (GET "/lines/:id-or-name/directions" request
@@ -38,7 +38,7 @@
              directions (q/get-directions @state/tl-state id-or-name)]
          (if (seq (:directions directions))
            (success directions)
-           (resource-not-found )))))
+           (resource-not-found)))))
 
 (def get-stations
   (GET "/lines/:id-or-name/directions/:direction-id/stations" request
@@ -49,20 +49,21 @@
                                       direction-id)]
          (if (seq (:stations stations))
            (success stations)
-           (resource-not-found )))))
+           (resource-not-found)))))
 
 (def get-horaires
-  (GET "/lines/:line-id/directions/:direction-id/stations/:station-id/horaires"
+  (GET "/lines/:id-or-name/directions/:direction-id/stations/:station-id/horaires"
        request
        (timbre/info request)
-       (let [line-id (get-in request [:params :line-id])
+       (let [id-or-name (get-in request [:params :id-or-name])
+             line-id (:id (q/line-by-name-or-id @state/tl-state id-or-name))
              direction-id (get-in request [:params :direction-id])
              station-id (get-in request [:params :station-id])
              horaires (scrapper/fetch-horaires
-                      line-id direction-id station-id )]
+                       line-id direction-id station-id)]
          (if (seq horaires)
            (success horaires)
-           (resource-not-found )))))
+           (resource-not-found)))))
 
 (defroutes routes
   refresh
