@@ -1,4 +1,4 @@
-# The Unofficial TL (Transport Lausannois) API
+# The Unofficial TL (Transports Lausannois) API
 
 Documentation of the Web API: https://tl.remembr.moe/
 
