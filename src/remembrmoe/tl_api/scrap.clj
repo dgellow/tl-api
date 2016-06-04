@@ -75,7 +75,7 @@
                {:id (second (str/split (first %) #"="))
                 :name (second (str/split (second %) #"="))})))
 
-        ;; Extract destinations and check for signaled issues
+        ;; Extract terminuses and check for signaled issues
         info (html/select page selector-lines-info)
         lines-info
         (->> info
@@ -85,9 +85,9 @@
                (if (= (some (fn [y] (get-in y [:attrs :src])) x)
                       "images/alert.png")
                  {:issue true
-                  :info (str (second x) " <-> "
+                  :terminus (str (second x) " <-> "
                              (first (:content (last x))))}
-                 {:info (str (first x) " <-> "
+                 {:terminus (str (first x) " <-> "
                              (first (:content (last x))))}))))]
     (map merge lines-basic lines-info)))
 

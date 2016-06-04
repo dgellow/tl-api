@@ -99,18 +99,18 @@ Response:
    {
     "id": "11822125115506799",
     "name": "LEB",
-    "info": "Lausanne-Flon <-> Bercher",
+    "terminus": "Lausanne-Flon <-> Bercher",
     "issue": true
   },
   {
     "id": "11821953316814928",
     "name": "BUS LEB",
-    "info": "Bercher <-> Fey"
+    "terminus": "Bercher <-> Fey"
   },
   {
     "id": "11821953316814882",
     "name": "m1",
-    "info": "Renens-Gare <-> Lausanne-Flon"
+    "terminus": "Renens-Gare <-> Lausanne-Flon"
   },
   ...
 ]
@@ -131,7 +131,7 @@ Response:
    "id": "11821953316814882",
    "name": "m1",
    "issue": true,
-   "info": "Renens-Gare <-> Lausanne-Flon",
+   "terminus": "Renens-Gare <-> Lausanne-Flon",
    "directions": [
       {
          "id": "2533279085547610",
