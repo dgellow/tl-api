@@ -1,0 +1,15 @@
+machine:
+  java:
+    version: oraclejdk8
+
+dependencies:
+  pre:
+    - wget https://github.com/boot-clj/boot-bin/releases/download/2.5.2/boot.sh
+    - mv boot.sh boot && chmod a+x boot && sudo mv boot /usr/local/bin
+  override:
+    - boot && boot checkout
+
+test:
+  override:
+    - boot build
+    - boot build-tests
