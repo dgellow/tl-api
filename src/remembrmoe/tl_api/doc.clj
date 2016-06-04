@@ -122,7 +122,7 @@
   "body {
     padding-right: 20px;
     padding-left: 20px;
-    font-family: monospace;
+    font-family: sans-serif;
     max-width: 800px;
     margin: auto;
     padding-top: 20px;
@@ -141,6 +141,7 @@
     border: 1px solid #DADADA;
     margin-left: 80px;
     padding: 10px;
+    overflow-x: scroll;
   }
 
   p.indent {
