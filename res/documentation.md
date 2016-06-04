@@ -196,8 +196,6 @@ Samuel El-Borai
 
 [http://www.webp.ch/](http://www.webp.ch/)
 
-[https://github.com/RememberMoe/tl-api](https://github.com/RememberMoe/tl-api)
-
 ## See also
 
 Github for bug report and sources - [https://github.com/RememberMoe/tl-api](https://github.com/RememberMoe/tl-api)
