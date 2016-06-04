@@ -14,6 +14,7 @@
                  [enlive "1.1.6"]
                  [dgellow/utils "0.1.0"]
                  [circleci/clj-yaml "0.5.5"]
+                 [markdown2clj "0.1.3"]
 
                  ;; Dev tools
                  [adzerk/boot-test "1.1.1"]

@@ -12,9 +12,9 @@
        (timbre/info request)
        (if (.contains (get-in request [:headers "user-agent"]) "curl")
          {:headers {"Content-Type" "text/plain; charset=utf-8"}
-          :body(doc/to-ansi)}
+          :body(doc/gen-ansi)}
          {:headers {"Content-Type" "text/html; charset=utf-8"}
-          :body(doc/to-html)}))
+          :body(doc/gen-html)}))
 
   (context "/api/v1" [] v1/routes)
 

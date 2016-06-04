@@ -1,64 +1,122 @@
 (ns remembrmoe.tl-api.doc
-  (:require [clj-yaml.core :as yaml]
-            [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [markdown2clj.core :as md]))
 
 (defn read-documentation-file []
-  (slurp (io/resource "documentation.yaml")))
+  (slurp (io/resource "documentation.md")))
 
-(defprotocol Formatter
-  (bold [x s])
-  (title [x s])
-  (title2 [x s])
-  (p [x s])
-  (p2 [x s]))
+(defprotocol Renderer
+  (heading [_ segment])
+  (paragraph [_ segment])
+  (fenced-code-block [_ segment])
+  (text [_ segment])
+  (link [_ segment])
+  (soft-line-break [_ segment])
+  (code [_ segment])
+  (bold [_ segment])
+  (italic [_ segment]))
 
-(defrecord HtmlFormatter []
-  Formatter
-  (bold [_ s] (str "<b>" s "</b>"))
-  (title [_ s] (str "<h2>" s "</h2>"))
-  (title2 [_ s] (str "<h3>" s "</h3>"))
-  (p [_ s] (str "<p>" s "</p>"))
-  (p2 [_ s] (str "<p class='indent'>" s "</p>")))
+(defrecord HtmlRenderer []
+  Renderer
+  (heading [renderer [{level :level} & more]]
+    (->> more
+       (map (partial render-segment renderer))
+       clojure.string/join
+       ((fn [x] (format "<h%s>%s</h%s>" level x level)))))
+  (paragraph [renderer segment]
+    (->> segment
+       (map (partial render-segment renderer))
+       clojure.string/join
+       (format "<p>%s</p>")))
+  (fenced-code-block [_ segment]
+    (->> (some :text segment)
+       ((fn [x] (format "<pre>%s</pre>" x)))))
+  (text [_ text] text)
+  (link [_ [{title :title} {dest :destination} {text :text}]]
+    (str "<a"
+         (format " href=\"%s\"" dest)
+         (when title (format " title=\"%s\"" title))
+         ">" text "</a>"))
+  (soft-line-break [_ _] "\n")
+  (code [_ [{text :text}]]
+    (format "<pre class=\"inline\">%s</pre>" text))
+  (bold [_ [{text :text}]]
+    (format "<strong>%s</strong>" text))
+  (italic [_ [{text :text}]]
+    (format "<em>%s</em>" text)))
 
-(defrecord AnsiFormatter []
-  Formatter
-  (bold [_ s] (str "[1m" s "[0m"))
-  (title [x s] (bold x (.toUpperCase s)))
-  (title2 [x s] (p x (bold x (.toUpperCase s))))
-  (p [_ s] (str (apply str (repeat 6 " ")) s))
-  (p2 [_ s] (str (apply str (repeat 12 " ")) s)))
+(defn indent
+  ([n s] (indent n " " s))
+  ([n char s]
+   (str (clojure.string/join (repeat n char)) s)))
 
-(def documentation
-  (let [docs
-        (map yaml/parse-string
-          (clojure.string/split (read-documentation-file) #"---"))
-        doc-header (first docs)
-        doc-body (second docs)]
-    (list doc-header doc-body)))
+(defrecord AnsiRenderer []
+  Renderer
+  (heading [renderer [{level :level} & more]]
+    (->> more
+       (map (partial render-segment renderer))
+       clojure.string/join
+       (.toUpperCase)
+       (indent (- level 2) "   ")
+       ((fn [x] (bold renderer [{:text x}])))
+       (str "\n")))
+  (paragraph [renderer segment]
+    (->> segment
+       (map (partial render-segment renderer))
+       clojure.string/join
+       (partition-all 70)
+       (map clojure.string/join)
+       (map clojure.string/trim)
+       (map (partial indent 6))
+       (clojure.string/join "\n")
+       (format "%s\n")))
+  (fenced-code-block [_ segment]
+    (->> (some :text segment)
+       (indent 8)))
+  (text [_ text] text)
+  (link [_ [{title :title} {dest :destination} {text :text}]]
+    (str "[4m" dest "[0m"))
+  (soft-line-break [_ _] " ")
+  (code [_ [{text :text}]]
+    (format "`%s'" text))
+  (bold [_ [{text :text}]]
+    (format "[1m%s[0m" text))
+  (italic [_ [{text :text}]]
+    (format "[3m%s[0m" text)))
 
-(defmulti format-content (fn [formatter x] (type x)))
+(defn render-segment [renderer md-segment]
+  (cond
+    (:paragraph md-segment)
+    (paragraph renderer (:paragraph md-segment))
 
-(defmethod format-content java.lang.String [formatter x]
-  (->> x
-     (clojure.string/split-lines)
-     (map (partial p formatter))
-     (clojure.string/join "\n")))
+    (:heading md-segment)
+    (heading renderer (:heading md-segment))
 
-(defmethod format-content flatland.ordered.map.OrderedMap [formatter x]
-  (->> x
-     (map (fn [[t c]]
-            (list
-             (->> (name t)
-                (title2 formatter))
-             (->> c
-                (clojure.string/split-lines)
-                (map (partial p2 formatter))
-                (clojure.string/join "\n")))))))
+    (:fenced-code-block md-segment)
+    (fenced-code-block renderer (:fenced-code-block md-segment))
 
-(defn format-doc-section [formatter yml-object]
-  (list (title formatter (:title yml-object))
-        (format-content formatter (:content yml-object))
-        "\n"))
+    (:text md-segment)
+    (text renderer (:text md-segment))
+
+    (:link md-segment)
+    (link renderer (:link md-segment))
+
+    (:soft-line-break md-segment)
+    (soft-line-break renderer (:soft-line-break md-segment))
+
+    (:code md-segment)
+    (code renderer (:code md-segment))
+
+    (:bold md-segment)
+    (bold renderer (:bold md-segment))
+
+    (:italic md-segment)
+    (italic renderer (:italic md-segment))
+
+    :default
+    (throw (java.lang.UnsupportedOperationException.
+            (str
+             "No rendering function has been implemented for this markdown segment:\n" md-segment)))))
 
 (def html-styles
   "body {
@@ -83,25 +141,23 @@
     padding-left: 140px;
   }")
 
-(defn to-html []
-  (let [header (first documentation)
-        body (map (partial format-doc-section (HtmlFormatter.))
-               (second documentation))]
-    (->> (list (str "<style>" html-styles "</style>")
-             header body)
-       flatten
-       (clojure.string/join "\n")
-       str
-       (#(str
-          "<html><head><meta name=viewport content='width=device-width, initial-scale=1'></head>"
-          "<body>" % "</body></html>\n")))))
+(defn to-html [doc]
+  (->> doc
+     (map (partial render-segment (HtmlRenderer.)))
+     (clojure.string/join "\n")
+     (#(str
+        "<html><head><meta name=viewport content='width=device-width, initial-scale=1'></head>"
+        "<style>" html-styles "</style>"
+        "<body>" % "</body></html>\n"))))
 
-(defn to-ansi []
-  (let [header (first documentation)
-        body (map (partial format-doc-section (AnsiFormatter.))
-               (second documentation))]
-    (->> (list header "" body)
-       flatten
-       (clojure.string/join "\n")
-       str
-       (#(str % "\n")))))
+(defn gen-html []
+  (to-html (:document (md/parse (read-documentation-file)))))
+
+(defn to-ansi [doc]
+  (->> doc
+     (map (partial render-segment (AnsiRenderer.)))
+     (clojure.string/join "\n")
+     (#(str % "\n"))))
+
+(defn gen-ansi []
+  (to-ansi (:document (md/parse (read-documentation-file)))))
