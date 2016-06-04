@@ -95,9 +95,25 @@ curl https://tl.remembr.moe/api/v1/lines
 Response:
 
 ```
-[{"id":"11822125115506799","name":"LEB"},
- {"id":"11821953316814928","name":"BUS LEB"},
- {"id":"11821953316814882","name":"m1"}, ...]
+[
+   {
+    "id": "11822125115506799",
+    "name": "LEB",
+    "info": "Lausanne-Flon <-> Bercher",
+    "issue": true
+  },
+  {
+    "id": "11821953316814928",
+    "name": "BUS LEB",
+    "info": "Bercher <-> Fey"
+  },
+  {
+    "id": "11821953316814882",
+    "name": "m1",
+    "info": "Renens-Gare <-> Lausanne-Flon"
+  },
+  ...
+]
 ```
 
 And more detailed information for a specific line
@@ -111,16 +127,34 @@ curl https://tl.remembr.moe/api/v1/lines/11821953316814882
 Response:
 
 ```
-{"id":"11821953316814882",
- "name":"m1",
- "directions":
-   [{"id":"2533279085547610",
-     "direction":"11821953316814882",
-     "stations":
-       [{"id":"3377704015495891","id-stop":"2533279085547610"},
-        {"id":"3377704015495524","id-stop":"2533279085547610"},
-         ...]}
-     ...]}
+{
+   "id": "11821953316814882",
+   "name": "m1",
+   "issue": true,
+   "info": "Renens-Gare <-> Lausanne-Flon",
+   "directions": [
+      {
+         "id": "2533279085547610",
+         "direction": "11821953316814882",
+         "from": "Renens-Gare",
+         "to": "Lausanne-Flon",
+         "stations": [
+            {
+               "id": "3377704015495891",
+               "id-stop": "2533279085547610",
+               "name": "Renens-Gare"
+            },
+            {
+               "id": "3377704015495524",
+               "id-stop": "2533279085547610",
+               "name": "Epenex"
+            },
+            ...
+         ]
+      },
+      ...
+   ]
+}
 ```
 
 ### directions
@@ -136,11 +170,24 @@ curl https://tl.remembr.moe/api/v1/lines/m1/directions
 Response:
 
 ```
-{"id-line":"11821953316814882",
- "name-line":"m1",
- "directions":
-   [{"id":"2533279085547610", "direction":"11821953316814882"},
-    {"id":"2533279085549603","direction":"11821953316814882"}]}
+{
+   "id-line": "11821953316814882",
+   "name-line": "m1",
+   "directions": [
+      {
+         "id": "2533279085547610",
+         "direction": "11821953316814882",
+         "from": "Renens-Gare",
+         "to": "Lausanne-Flon"
+      },
+      {
+         "id": "2533279085549603",
+         "direction": "11821953316814882",
+         "from": "Lausanne-Flon",
+         "to": "Renens-Gare"
+      }
+   ]
+}
 ```
 
 You can also get that information from `/lines/:id_or_name` (see LINES).
@@ -158,14 +205,29 @@ curl https://tl.remembr.moe/api/v1/lines/m1/directions/2533279085547610/stations
 Response:
 
 ```
-{"id-line":"11821953316814882",
- "name-line":"m1",
- "id-direction":"2533279085547610",
- "stations":
-   [{"id":"3377704015495891","id-stop":"2533279085547610"},
-    {"id":"3377704015495524","id-stop":"2533279085547610"},
-    {"id":"3377704015495445","id-stop":"2533279085547610"},
-     ...]}
+{
+   "id-line": "11821953316814882",
+   "name-line": "m1",
+   "id-direction": "2533279085547610",
+   "stations": [
+      {
+         "id": "3377704015495891",
+         "id-stop": "2533279085547610",
+         "name": "Renens-Gare"
+      },
+      {
+         "id": "3377704015495524",
+         "id-stop": "2533279085547610",
+         "name": "Epenex"
+      },
+      {
+         "id": "3377704015495445",
+         "id-stop": "2533279085547610",
+         "name": "Crochy"
+      },
+      ...
+   ]
+}
 ```
 
 ### horaires
