@@ -142,22 +142,29 @@
   [[:ul (html/attr= :data-role "listview")] :.arret :a])
 
 (defn extract-stations [page]
-  (let [selection (html/select page selector-stations)]
-    (->> selection
-       ;; Get href attributes
-       (map (comp
-             :href
-             :attrs))
-       ;; Get url parameters
-       (map (comp
-             #(str/split % #"&")
-             second
-             #(str/split % #"\?")))
-       ;; Convert to hashmap
-       (map
-         #(identity
-           {:id (second (str/split (second %) #"="))
-            :id-stop (second (str/split (nth % 3) #"="))})))))
+  (let [selection (html/select page selector-stations)
+        stations-base
+        (->> selection
+           ;; Get href attributes
+           (map (comp
+                 :href
+                 :attrs))
+           ;; Get url parameters
+           (map (comp
+                 #(str/split % #"&")
+                 second
+                 #(str/split % #"\?")))
+           ;; Convert to hashmap
+           (map
+             #(identity
+               {:id (second (str/split (second %) #"="))
+                :id-stop (second (str/split (nth % 3) #"="))})))
+
+        stations-info (->> selection
+                         (map :content)
+                         flatten
+                         (map (fn [x] {:name x})))]
+    (map merge stations-base stations-info)))
 
 (defn fetch-stations [direction-map]
   (extract-stations (fetch-url (make-station-url direction-map))))
