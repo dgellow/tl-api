@@ -127,7 +127,7 @@ Lines have in general two directions.
 You can have a list of directions for a specific line:
 
 ```
-curl https://tl.remembr.moe/api/v1/m1/directions
+curl https://tl.remembr.moe/api/v1/lines/m1/directions
 ```
 
 Response:
@@ -149,7 +149,7 @@ Given a direction, a line has stations.
 List of stations:
 
 ```
-curl https://tl.remembr.moe/api/v1/m1/directions/2533279085547610/stations
+curl https://tl.remembr.moe/api/v1/lines/m1/directions/2533279085547610/stations
 ```
 
 Response:
