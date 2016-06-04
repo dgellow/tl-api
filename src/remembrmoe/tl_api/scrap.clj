@@ -36,7 +36,12 @@
 
 (defn extract-horaires [page]
   (let [selection (html/select page selector-horaires)]
-    (map (comp first :content) selection)))
+    (->> selection
+       (map :content)
+       (map (fn [x]
+              (if (some (fn [y] (get-in y [:attrs :src])) x)
+                (str "~" (last x))
+                (first x)))))))
 
 (defn fetch-horaires [id-line id-direction id-station]
   (extract-horaires (fetch-url
