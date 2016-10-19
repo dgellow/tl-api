@@ -36,7 +36,8 @@
   (comp (aot)
         (pom)
         (uber)
-        (jar)))
+        (jar)
+        (target)))
 
 (deftask build-tests
   "Build project tests"
@@ -51,4 +52,5 @@
   (comp (aot)
         (pom)
         (uber)
-        (jar)))
+        (jar)
+        (target)))
