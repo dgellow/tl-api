@@ -6,6 +6,6 @@ WORKDIR /app
 
 RUN rm -rf target
 RUN /usr/bin/boot build
-RUN /opt/jdk/bin/java -jar target/project.jar
+ENTRYPOINT /opt/jdk/bin/java -jar target/project.jar
 
 EXPOSE 3000
